@@ -2,7 +2,12 @@
 Local discord bot that keeps track of polymarket movements (WIP)
 Requires a .env file containing a discord bot app token
 
-## Functionality
+## Commands For users
+###/check_market_rate MARKET_NAME
+Returns both the yes and no value of a market  
+MARKET_NAME: name in the url of a market/event on polymarket
+
+## Functionality for Devs
 ### api_get_market
 Requires the name of a market as input.  
 Returns json object used for other functions.
