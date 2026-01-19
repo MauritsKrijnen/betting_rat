@@ -6,11 +6,13 @@ import os
 
 ## Import classes
 import api
+import db
 
 ## Setup variables
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
-new_api = api.Api
+poly_api = api.Api
+rat_db = db.BettingRatDatabase
 
 # Setup logging
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
@@ -25,14 +27,26 @@ async def on_ready():
     print(f"Let's go gambling!")
 
 ## Commands
+# Get market + its prices
 @bot.command()
 async def check_market_rate(ctx, market_name):
-    market = new_api.api_get_market(market_name)
+    market = poly_api.api_get_market(market_name)
     if market!=None:
-        prices = new_api.api_get_market_prices(new_api, market)
+        prices = poly_api.api_get_market_prices(poly_api, market)
         if prices[0]!=None:
             await ctx.send(f"The buy price for {market_name} are buy: {prices[0]} and sell: {prices[1]}")
             return
-    await ctx.send("Market get request denied")
+    await ctx.send("Market request reached an unexpected result. Check the logs for more info")
+
+@bot.command()
+async def get_tracking_markets(ctx):
+    records = rat_db.get_markets(rat_db)
+    if records!=None:
+        await ctx.send("In chronological order")
+        for row in records:
+            await ctx.send(f'{row[0]}: link: {row[1]}, ineterval: {row[2]}, yes price: {row[3]}, no price: {row[4]}')
+    await ctx.send("Database query could not be completed. Check the logs for more info")
+
+
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
