@@ -40,13 +40,19 @@ async def check_market_rate(ctx, market_name):
 
 @bot.command()
 async def get_tracking_markets(ctx):
-    records = rat_db.get_markets(rat_db)
+    records = rat_db.get_markets()
     if records!=None:
         await ctx.send("In chronological order")
         for row in records:
             await ctx.send(f'{row[0]}: link: {row[1]}, ineterval: {row[2]}, yes price: {row[3]}, no price: {row[4]}')
     await ctx.send("Database query could not be completed. Check the logs for more info")
 
+@bot.command()
+async def add_tracking_market(ctx, name, link, interval):
+    new_record = rat_db.add_market(name, link, interval)
+    if new_record!=None:
+        await ctx.send(f'New row has been added: {new_record[0]}: link: {new_record[1]}, ineterval: {new_record[2]}, yes price: {new_record[3]}, no price: {new_record[4]}')
+    await ctx.send("Database query could not be completed. Check the logs for more info")
 
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)
