@@ -35,7 +35,7 @@ class BettingRatDatabase():
             with sqlite3.connect("my.db") as conn:
                 cur = conn.cursor()
                 values = (name, link, interval)
-                cur.execute('INSERT INTO markets (name, link, interval) VALUES(?,?,?)', values)
+                cur.execute('INSERT INTO markets (name, link, interval) VALUES(?,?,?) RETURNING *;', values)
                 result = cur.fetchone()
                 return result
         except():
@@ -51,6 +51,14 @@ class BettingRatDatabase():
         except():
             return None
         
-    def remove_market(name, link):
-        pass
+    def remove_market(self, link):
+        try:
+            with sqlite3.connect("my.db") as conn:
+                cur = conn.cursor()
+                values = (link,)
+                cur.execute('DELETE FROM markets WHERE link=?', values)
+                result = cur.fetchall()
+                return result
+        except():
+            return None
         
