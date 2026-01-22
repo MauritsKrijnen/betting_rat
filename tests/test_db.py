@@ -21,20 +21,28 @@ class TestDbGetData(unittest.TestCase):
 
 class TestDbAddData(unittest.TestCase):
     def test_api_add_market_ok(self):
-        result = rat_db.add_market("Trump Greenland", "will-trump-acquire-greenland-before-2027", "5min")
+        result = rat_db.add_market("Trump Greenland", "will-trump-acquire-greenland-before-2027", "5", 0.117, 0.883)
         self.assertIsNotNone(result)
         self.assertIsInstance(result, tuple)
         self.assertIsInstance(result[0], str)
 
     def test_api_add_market_bulk_ok(self):
-        result = rat_db.add_market_bulk([("Trump Greenland", "will-trump-acquire-greenland-before-2027", "5min"), ("Democrat nominee", "will-gavin-newsom-win-the-2028-democratic-presidential-nomination-568", "5min")])
+        result = rat_db.add_market_bulk([("Trump Greenland", "will-trump-acquire-greenland-before-2027", "1", 0.117, 0.883), ("Democrat nominee", "will-gavin-newsom-win-the-2028-democratic-presidential-nomination-568", "5", 0.117, 0.883)])
         self.assertIsNotNone(result)
         # This does not actually check the insert but instead checks if the expected result of a executemany is correct(empty list)
         self.assertIsInstance(result, list)
+
+class TestDbUpdatedData(unittest.TestCase):
+    def test_api_update_market_ok(self):
+        result = rat_db.add_market("Trump Greenland", "will-trump-acquire-greenland-before-2027", "5", 0.117, 0.883)
+        result = rat_db.update_market_price(link="will-trump-acquire-greenland-before-2027", new_price=(0.1, 0.9))
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result[0], tuple)
 
 class TestDbDeleteData(unittest.TestCase):
     def test_api_delete_market_ok(self):
         result = rat_db.remove_market("will-trump-acquire-greenland-before-2027")
         self.assertIsNotNone(result)
+        # remove other markets as well
         result = rat_db.remove_market("will-gavin-newsom-win-the-2028-democratic-presidential-nomination-568")
 

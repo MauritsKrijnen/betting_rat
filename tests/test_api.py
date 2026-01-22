@@ -9,9 +9,12 @@ class TestApiFunction(unittest.TestCase):
     
 class TestApiGetMarketPrices(unittest.TestCase):
     def test_api_get_market(self):
-        self.assertNotEqual(Api.api_get_market("will-trump-acquire-greenland-before-2027"), None)
+        self.assertIsNotNone(Api.api_get_market("will-trump-acquire-greenland-before-2027"))
+        self.assertIsInstance(Api.api_get_market("will-trump-acquire-greenland-before-2027"), list)
 
     def test_get_prices(self):
         api = Api
         self.assertGreater(float(api.api_get_market_prices(api, api.api_get_market("will-trump-acquire-greenland-before-2027"))[0]), 0)
         self.assertGreater(1, float(api.api_get_market_prices(api, api.api_get_market("will-trump-acquire-greenland-before-2027"))[0]))
+        self.assertGreater(float(api.api_get_market_prices(api, api.api_get_market("will-trump-acquire-greenland-before-2027"))[1]), 0)
+        self.assertGreater(1, float(api.api_get_market_prices(api, api.api_get_market("will-trump-acquire-greenland-before-2027"))[1]))
